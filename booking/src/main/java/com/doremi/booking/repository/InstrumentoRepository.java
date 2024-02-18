@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface InstrumentoRepository extends JpaRepository<Instrumento, Long> {
+    Instrumento findByNombre(String nombre);
 }
+
+
