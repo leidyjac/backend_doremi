@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -71,6 +72,14 @@ public class InstrumentoService implements IInstrumentoService{
         return maptoDtoSalida(instrumento);
     }
 
+    @Override
+    public List<InstrumentoSalidaDto> listarInstrumentosHome() {
+        List<Instrumento> listaInstrumentos = instrumentoRepository.findAll();
+        Collections.shuffle(listaInstrumentos);
+        List<Instrumento> instrumentosAleatorios = listaInstrumentos.subList(0, Math.min(10, listaInstrumentos.size()));
+        LOGGER.info("Listado de instrumentos aleatorios: {}", instrumentosAleatorios);
+        return instrumentosAleatorios.stream().map(this::maptoDtoSalida).toList();
+    }
 
     public Instrumento maptoEntity(InstrumentoEntradaDto instrumentoEntradaDto){
         return modelMapper.map(instrumentoEntradaDto,Instrumento.class);

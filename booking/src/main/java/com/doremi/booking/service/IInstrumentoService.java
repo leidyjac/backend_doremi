@@ -13,6 +13,8 @@ public interface IInstrumentoService {
 
     List<InstrumentoSalidaDto> listarInstrumentos();
 
+    List<InstrumentoSalidaDto> listarInstrumentosHome();
+
     void eliminarInstrumento(Long id) throws ResourceNotFoundException;
 
     InstrumentoSalidaDto buscarPorNombre (String nombre);
