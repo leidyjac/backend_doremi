@@ -1,9 +1,17 @@
 package com.doremi.booking.dto.entrada.instrumento;
 
+import com.doremi.booking.dto.entrada.imagen.ImagenEntradaDto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InstrumentoEntradaDto {
     @NotNull(message = "El nombre del instrumento no puede ser nulo")
@@ -17,58 +25,9 @@ public class InstrumentoEntradaDto {
     @NotBlank(message = "Debe especificarse una descripción del instrumento")
     private String descripcion;
 
-    private double precio;
+    private double precioDia;
 
-    private String imagen;
-
-    public InstrumentoEntradaDto() {
-    }
-
-    public InstrumentoEntradaDto(String nombre, String tipo, String descripcion, double precio, String imagen) {
-        this.nombre = nombre;
-        this.tipo = tipo;
-        this.descripcion = descripcion;
-        this.precio = precio;
-        this.imagen = imagen;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public double getPrecio() {
-        return precio;
-    }
-
-    public void setPrecio(double precio) {
-        this.precio = precio;
-    }
-
-    public String getImagen() {
-        return imagen;
-    }
-
-    public void setImagen(String imagen) {
-        this.imagen = imagen;
-    }
+    @NotNull(message = "La imagen del instrumento no puede ser nula")
+    @Valid
+    private ImagenEntradaDto imagen;
 }
