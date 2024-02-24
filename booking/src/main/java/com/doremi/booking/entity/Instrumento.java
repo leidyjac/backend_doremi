@@ -19,16 +19,19 @@ public class Instrumento {
     private Long id;
     private String nombre;
     private String tipo;
-    private String descripcion;
-    private double precioDia;
 
+    @ManyToOne
+    @JoinColumn(name = "categoria_id")
+    private Categoria categoria;
+    private double precioDia;
     @OneToMany(mappedBy = "instrumento", cascade = CascadeType.ALL)
     private List<Imagen> imagenes = new ArrayList<>();
 
-    public Instrumento(String nombre, String tipo, String descripcion, double precioDia, List<Imagen> imagenes) {
+
+    public Instrumento(String nombre, String tipo, Categoria categoria, double precioDia, List<Imagen> imagenes) {
         this.nombre = nombre;
         this.tipo = tipo;
-        this.descripcion = descripcion;
+        this.categoria = categoria;
         this.precioDia = precioDia;
         this.imagenes = imagenes;
     }

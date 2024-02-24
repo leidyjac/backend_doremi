@@ -17,14 +17,16 @@ public class InstrumentoEntradaDto {
     @NotNull(message = "El nombre del instrumento no puede ser nulo")
     @NotBlank(message = "Debe especificarse el nombre del instrumento")
     private String nombre;
-    @NotNull(message = "El tipo de instrumento no puede ser nulo")
-    @NotBlank(message = "Debe especificarse el tipo de instrumento")
-    private String tipo;
+    @NotNull(message = "La descripción no puede ser nula")
+    @NotBlank(message = "Debe especificarse una descripción")
+    private String descripción;
 
-    @NotNull(message = "La descripción del instrumento no puede ser nulo")
-    @NotBlank(message = "Debe especificarse una descripción del instrumento")
-    private String descripcion;
+    @NotNull(message = "El ID de la categoría no puede ser nulo")
+    @NotBlank(message = "Debe especificarse un ID de la categoría")
+    private Long idCategoria;
 
+    @NotNull(message = "El precio no puede ser nulo")
+    @NotBlank(message = "Debe especificarse un precio")
     private double precioDia;
 
     @NotNull(message = "La imagen del instrumento no puede ser nula")

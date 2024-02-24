@@ -2,9 +2,11 @@ package com.doremi.booking.service.impl;
 
 import com.doremi.booking.dto.entrada.instrumento.InstrumentoEntradaDto;
 import com.doremi.booking.dto.salida.instrumento.InstrumentoSalidaDto;
+import com.doremi.booking.entity.Categoria;
 import com.doremi.booking.entity.Instrumento;
 import com.doremi.booking.exceptions.ResourceNotCreatedException;
 import com.doremi.booking.exceptions.ResourceNotFoundException;
+import com.doremi.booking.repository.CategoriaRepository;
 import com.doremi.booking.repository.InstrumentoRepository;
 import com.doremi.booking.service.IInstrumentoService;
 import org.modelmapper.ModelMapper;
@@ -22,17 +24,26 @@ public class InstrumentoService implements IInstrumentoService{
 
     private final InstrumentoRepository instrumentoRepository;
 
+    private final CategoriaRepository categoriaRepository;
+
     private final ModelMapper modelMapper;
 
-    public InstrumentoService(InstrumentoRepository instrumentoRepository, ModelMapper modelMapper) {
+    public InstrumentoService(InstrumentoRepository instrumentoRepository, CategoriaRepository categoriaRepository, ModelMapper modelMapper) {
         this.instrumentoRepository = instrumentoRepository;
+        this.categoriaRepository = categoriaRepository;
         this.modelMapper = modelMapper;
     }
 
     @Override
     public InstrumentoSalidaDto agregarInstrumento(InstrumentoEntradaDto instrumento) throws ResourceNotCreatedException{
         if((instrumentoRepository.findByNombre(instrumento.getNombre())== null)) {
-            Instrumento instrumentoAgregado = instrumentoRepository.save(maptoEntity(instrumento));
+            Categoria categoria = categoriaRepository.findById(instrumento.getIdCategoria())
+            .orElseThrow(() -> new ResourceNotCreatedException("La categoría no existe"));
+
+            Instrumento instrumentoARegistrar = maptoEntity(instrumento);
+            instrumentoARegistrar.setCategoria(categoria);
+
+            Instrumento instrumentoAgregado = instrumentoRepository.save(instrumentoARegistrar);
             InstrumentoSalidaDto instrumentoSalidaDto = maptoDtoSalida(instrumentoAgregado);
             LOGGER.info("Instrumento guardado: {}", instrumentoSalidaDto);
             return instrumentoSalidaDto;
