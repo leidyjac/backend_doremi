@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,14 +20,13 @@ public class InstrumentoEntradaDto {
     private String nombre;
     @NotNull(message = "La descripción no puede ser nula")
     @NotBlank(message = "Debe especificarse una descripción")
-    private String descripción;
+    private String descripcion;
 
     @NotNull(message = "El ID de la categoría no puede ser nulo")
-    @NotBlank(message = "Debe especificarse un ID de la categoría")
     private Long idCategoria;
 
     @NotNull(message = "El precio no puede ser nulo")
-    @NotBlank(message = "Debe especificarse un precio")
+    @Positive(message = "El precio debe ser mayor que 0")
     private double precioDia;
 
     @NotNull(message = "La imagen del instrumento no puede ser nula")
