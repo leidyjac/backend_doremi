@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class InstrumentoSalidaDto {
-    private Long id;
+    private Long instrumento_id;
     private String nombre;
     private CategoriaSalidaDto categoria;
     private String descripcion;
@@ -20,6 +20,6 @@ public class InstrumentoSalidaDto {
 
     @Override
     public String toString() {
-        return "Id: " + id + " - Nombre: " + nombre + " - Tipo: " + categoria + " - Descripción: " + descripcion + " - Precio:: " + precioDia + " -Imagen: " + imagen;
+        return "Id: " + instrumento_id + " - Nombre: " + nombre + " - Tipo: " + categoria + " - Descripción: " + descripcion + " - Precio:: " + precioDia + " -Imagen: " + imagen;
     }
 }

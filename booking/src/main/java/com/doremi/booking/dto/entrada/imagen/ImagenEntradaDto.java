@@ -26,5 +26,4 @@ public class ImagenEntradaDto {
     private String url;
 
 
-
 }

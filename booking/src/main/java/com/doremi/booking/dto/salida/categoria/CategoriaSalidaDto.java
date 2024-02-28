@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class CategoriaSalidaDto {
 
-    private Long id;
+    private Long categoria_id;
     private String nombre;
     private String imagen;
 }

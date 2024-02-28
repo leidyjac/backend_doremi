@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class ImagenSalidaDto {
 
-    private Long id;
+    private Long imagen_id;
     private String titulo;
     private String url;
 

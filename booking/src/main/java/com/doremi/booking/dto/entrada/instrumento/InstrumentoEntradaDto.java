@@ -23,7 +23,7 @@ public class InstrumentoEntradaDto {
     private String descripcion;
 
     @NotNull(message = "El ID de la categoría no puede ser nulo")
-    private Long idCategoria;
+    private Long categoria;
 
     @NotNull(message = "El precio no puede ser nulo")
     @Positive(message = "El precio debe ser mayor que 0")

@@ -15,14 +15,14 @@ public class Instrumento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private Long id;
+    @Column(name = "instrumento_id")
+    private Long instrumento_id;
     private String nombre;
 
     private String descripcion;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "categoria")
+    @JoinColumn(name = "categoria_id", referencedColumnName = "categoria_id")
     private Categoria categoria;
 
     private double precioDia;

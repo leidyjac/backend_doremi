@@ -3,6 +3,7 @@ package com.doremi.booking.service.impl;
 import com.doremi.booking.dto.entrada.imagen.ImagenEntradaDto;
 import com.doremi.booking.dto.entrada.instrumento.InstrumentoEntradaDto;
 import com.doremi.booking.dto.salida.instrumento.InstrumentoSalidaDto;
+import com.doremi.booking.entity.Categoria;
 import com.doremi.booking.entity.Imagen;
 import com.doremi.booking.entity.Instrumento;
 import com.doremi.booking.exceptions.ResourceNotCreatedException;
@@ -43,34 +44,37 @@ public class InstrumentoService implements IInstrumentoService {
     @Override
     public InstrumentoSalidaDto agregarInstrumento(InstrumentoEntradaDto instrumento) throws ResourceNotCreatedException {
         if ((instrumentoRepository.findByNombre(instrumento.getNombre()) == null)) {
-            /*Categoria categoria = categoriaRepository.findById(instrumento.getIdCategoria())
-            .orElseThrow(() -> new ResourceNotCreatedException("La categoría no existe"));*/
 
+            Categoria categoria = categoriaRepository.findById(instrumento.getCategoria())
+                    .orElseThrow(() -> new ResourceNotCreatedException("La categoría no existe"));
+
+            LOGGER.info ("Categoria -> " + categoria);
             Instrumento instrumentoARegistrar = maptoEntity(instrumento);
 
-            //instrumentoARegistrar.setCategoria(categoria);
+            instrumentoARegistrar.setCategoria(categoria);
 
-            /*ArrayList<Imagen> listaImagenes = new ArrayList<>();
-            Imagen imagen = new Imagen();
-            imagen.setUrl(instrumento.getImagen().getUrl());
-            listaImagenes.add(imagen);*/
-
-            Instrumento instrumentoAgregado = instrumentoRepository.save(instrumentoARegistrar);
-            InstrumentoSalidaDto instrumentoSalidaDto = maptoDtoSalida(instrumentoAgregado);
-            LOGGER.info("Instrumento guardado: {}", instrumentoSalidaDto);
-            Imagen imagen = imagenRepository.save(maptoEntityImagen(instrumento.getImagen()));
+            Imagen imagen = imagenRepository.save (maptoEntityImagen(instrumento.getImagen()));
             LOGGER.info("Imagen guardada");
+
+            Instrumento instrumentoAgregado = instrumentoRepository.save (instrumentoARegistrar);
+
+            LOGGER.info("instrumento agregados -> " + instrumentoAgregado);
+            InstrumentoSalidaDto instrumentoSalidaDto = maptoDtoSalida(instrumentoAgregado);
+
+            LOGGER.info("Instrumento guardado: {}", instrumentoSalidaDto);
+
             return instrumentoSalidaDto;
         } else {
+
             LOGGER.info("El instrumento ya se encuentra en la base de datos");
             throw new ResourceNotCreatedException("El instrumento ya se encuentra en la base de datos");
         }
 
     }
-
     @Override
     public List<InstrumentoSalidaDto> listarInstrumentos() {
         List<Instrumento> listaInstrumentos = instrumentoRepository.findAll();
+
         LOGGER.info("Listado de instrumentos: {}", listaInstrumentos);
         return listaInstrumentos.stream().map(this::maptoDtoSalida).toList();
     }
@@ -88,7 +92,6 @@ public class InstrumentoService implements IInstrumentoService {
         }
 
     }
-
     @Override
     public InstrumentoSalidaDto buscarPorNombre(String nombre) {
         Instrumento instrumento = instrumentoRepository.findByNombre(nombre);
