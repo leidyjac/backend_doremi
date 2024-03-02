@@ -26,7 +26,7 @@ public class Instrumento {
     private Categoria categoria;
 
     private double precioDia;
-    @OneToMany(mappedBy = "instrumento", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "instrumento", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Imagen> imagenes = new ArrayList<>();
 
 
@@ -36,5 +36,8 @@ public class Instrumento {
         this.categoria = categoria;
         this.precioDia = precioDia;
         this.imagenes = imagenes;
+    }
+    public Instrumento(Long instrumento_id) {
+        this.instrumento_id = instrumento_id;
     }
 }

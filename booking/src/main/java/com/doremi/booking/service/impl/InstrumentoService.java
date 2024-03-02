@@ -2,6 +2,8 @@ package com.doremi.booking.service.impl;
 
 import com.doremi.booking.dto.entrada.imagen.ImagenEntradaDto;
 import com.doremi.booking.dto.entrada.instrumento.InstrumentoEntradaDto;
+import com.doremi.booking.dto.salida.categoria.CategoriaSalidaDto;
+import com.doremi.booking.dto.salida.imagen.ImagenSalidaDto;
 import com.doremi.booking.dto.salida.instrumento.InstrumentoSalidaDto;
 import com.doremi.booking.entity.Categoria;
 import com.doremi.booking.entity.Imagen;
@@ -13,12 +15,13 @@ import com.doremi.booking.repository.ImagenRepository;
 import com.doremi.booking.repository.InstrumentoRepository;
 import com.doremi.booking.service.IInstrumentoService;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
-
+import java.util.stream.Collectors;
 
 
 @Service
@@ -53,12 +56,14 @@ public class InstrumentoService implements IInstrumentoService {
 
             instrumentoARegistrar.setCategoria(categoria);
 
-            Imagen imagen = imagenRepository.save (maptoEntityImagen(instrumento.getImagen()));
-            LOGGER.info("Imagen guardada");
 
             Instrumento instrumentoAgregado = instrumentoRepository.save (instrumentoARegistrar);
 
-            LOGGER.info("instrumento agregados -> " + instrumentoAgregado);
+            LOGGER.info("instrumento agregado -> " + instrumentoAgregado);
+
+            List<Imagen> imagen = imagenRepository.saveAll (mapToEntityImagenList(instrumento.getImagen(),instrumentoAgregado.getInstrumento_id()));
+            LOGGER.info("Imagen guardada -> " + imagen);
+
             InstrumentoSalidaDto instrumentoSalidaDto = maptoDtoSalida(instrumentoAgregado);
 
             LOGGER.info("Instrumento guardado: {}", instrumentoSalidaDto);
@@ -109,24 +114,41 @@ public class InstrumentoService implements IInstrumentoService {
     }
 
     public Instrumento maptoEntity(InstrumentoEntradaDto instrumentoEntradaDto) {
-        // Configurar el mapeo personalizado para ignorar el campo 'id' de Instrumento
-       /* modelMapper.typeMap(InstrumentoEntradaDto.class, Instrumento.class)
-                .addMappings(mapper -> mapper.skip(Instrumento::setInstrumentoId));*/
-
-        // Realizar el mapeo y devolver el resultado
         return modelMapper.map(instrumentoEntradaDto, Instrumento.class);
     }
 
-    public Imagen maptoEntityImagen(ImagenEntradaDto imagenEntradaDto) {
-        return modelMapper.map(imagenEntradaDto, Imagen.class);
+    public List<Imagen> mapToEntityImagenList(List<ImagenEntradaDto> imagenEntradaDtoList, Long idInstrumento) {
+
+        imagenEntradaDtoList = imagenEntradaDtoList.stream()
+                .map(imagenEntradaDto -> {
+                    imagenEntradaDto.setInstrumento_id(idInstrumento);
+                    return imagenEntradaDto;
+                })
+                .collect(Collectors.toList());
+
+        return imagenEntradaDtoList
+                .stream()
+                .map(imagenEntradaDto -> {
+                    Imagen imagen = new Imagen();
+                    imagen.setTitulo(imagenEntradaDto.getTitulo());
+                    imagen.setUrl(imagenEntradaDto.getUrl());
+                    imagen.setInstrumento(imagenEntradaDto.getInstrumento_id());
+                    return imagen;
+                })
+                .collect(Collectors.toList());
     }
 
+
     public InstrumentoSalidaDto maptoDtoSalida(Instrumento instrumento) {
-        return modelMapper.map(instrumento, InstrumentoSalidaDto.class);
+        InstrumentoSalidaDto instrumentoSalidaDto = new InstrumentoSalidaDto();
+        instrumentoSalidaDto.setInstrumento_id(instrumento.getInstrumento_id());
+        instrumentoSalidaDto.setNombre(instrumento.getNombre());
+        instrumentoSalidaDto.setCategoria(new CategoriaSalidaDto(instrumento.getCategoria().getCategoria_id(),instrumento.getCategoria().getNombre(),instrumento.getCategoria().getImagen()));
+        instrumentoSalidaDto.setDescripcion(instrumento.getDescripcion());
+        List<ImagenSalidaDto> imagenSalidaDto = modelMapper.map(instrumento.getImagenes(), new TypeToken<List<ImagenSalidaDto>>() {}.getType());
+        instrumentoSalidaDto.setImagen(imagenSalidaDto);
+
+        return instrumentoSalidaDto;
     }
 
 }
-
-
-
-

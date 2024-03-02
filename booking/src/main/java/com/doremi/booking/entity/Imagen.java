@@ -18,13 +18,15 @@ public class Imagen {
     private String titulo;
     private String url;
 
-    @ManyToOne
-    @JoinColumn(name = "instrumento_id")
-    private Instrumento instrumento;
+    //@ManyToOne(fetch = FetchType.LAZY)
+    @Column(name = "instrumento_id")
+    private Long instrumento;
 
-    public Imagen(String titulo, String url, Instrumento instrumento) {
+    public Imagen(String titulo, String url, Long instrumento) {
         this.titulo = titulo;
         this.url = url;
         this.instrumento = instrumento;
     }
+
+
 }

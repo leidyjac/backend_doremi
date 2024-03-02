@@ -25,5 +25,7 @@ public class ImagenEntradaDto {
     @URL(message = "Debe ser una URL válida")
     private String url;
 
+    private Long instrumento_id;
+
 
 }

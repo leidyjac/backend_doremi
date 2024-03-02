@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -15,11 +17,11 @@ public class InstrumentoSalidaDto {
     private CategoriaSalidaDto categoria;
     private String descripcion;
     private double precioDia;
-    private ImagenSalidaDto imagen;
-
+    private List<ImagenSalidaDto> imagen;
 
     @Override
     public String toString() {
         return "Id: " + instrumento_id + " - Nombre: " + nombre + " - Tipo: " + categoria + " - Descripción: " + descripcion + " - Precio:: " + precioDia + " -Imagen: " + imagen;
     }
+
 }

@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -31,5 +33,5 @@ public class InstrumentoEntradaDto {
 
     @NotNull(message = "La imagen del instrumento no puede ser nula")
     @Valid
-    private ImagenEntradaDto imagen;
+    private List<ImagenEntradaDto> imagen;
 }
