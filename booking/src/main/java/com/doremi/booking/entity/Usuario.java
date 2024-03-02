@@ -10,7 +10,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Table;
-
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -21,13 +23,22 @@ public class Usuario implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank(message = "El nombre no puede estar vacio")
+    @Size( max = 50, message = "El nombre no puede tener más de 50 caracteres")
     @Column
     private String nombre;
+    @NotBlank(message = "El nombre de usuario no puede estar vacio")
+    @Size( max = 50, message = "El nombre de usuario no puede tener más de 50 caracteres")
     @Column(unique = true)
     private String userName;
+    @NotBlank(message = "El email no puede estar vacio")
+    @Size( max = 50, message = "El email no puede tener más de 50 caracteres")
     @Column(unique = true)
+    @Email(message = "El formato del correo electrónico no es válido")
     private String email;
     @Column
+    @NotBlank(message = "El email no puede estar vacio")
+    @Size( min = 6, message = "La contraseña debe tener minimo 6 caracteres")
     private String password;
     @Column
     private UsuarioRole usuarioRole;
