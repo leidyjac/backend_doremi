@@ -24,8 +24,8 @@ public class DatosInicialesUsuarios implements ApplicationRunner {
         String passCifrado= cifrador.encode(passCinfrar);
         System.out.println("Clave cifrada: "+passCifrado);
         //crear un usuario
-        Usuario usuario1= new Usuario("Marcela","Administrador","marcela.hermosa@gmail.com",passCifrado, UsuarioRole.ROLE_ADMIN);
-        Usuario usuario2= new Usuario("Jorge","Jorge24","jorge24@gmail.com",passCifrado,UsuarioRole.ROLE_USER);
+        Usuario usuario1= new Usuario("Marcela","marcela.hermosa@gmail.com",passCifrado, UsuarioRole.ROLE_ADMIN);
+        Usuario usuario2= new Usuario("Jorge","jorge24@gmail.com",passCifrado,UsuarioRole.ROLE_USER);
         usuarioRepository.save(usuario1);
         usuarioRepository.save(usuario2);
     }

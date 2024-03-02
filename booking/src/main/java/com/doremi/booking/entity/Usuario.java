@@ -27,11 +27,7 @@ public class Usuario implements UserDetails {
     @Size( max = 50, message = "El nombre no puede tener más de 50 caracteres")
     @Column
     private String nombre;
-    @NotBlank(message = "El nombre de usuario no puede estar vacio")
-    @Size( max = 50, message = "El nombre de usuario no puede tener más de 50 caracteres")
-    @Column(unique = true)
-    private String userName;
-    @NotBlank(message = "El email no puede estar vacio")
+        @NotBlank(message = "El email no puede estar vacio")
     @Size( max = 50, message = "El email no puede tener más de 50 caracteres")
     @Column(unique = true)
     @Email(message = "El formato del correo electrónico no es válido")
@@ -43,18 +39,16 @@ public class Usuario implements UserDetails {
     @Column
     private UsuarioRole usuarioRole;
 
-    public Usuario(Long id, String nombre, String userName, String email, String password, UsuarioRole usuarioRole) {
+    public Usuario(Long id, String nombre, String email, String password, UsuarioRole usuarioRole) {
         this.id = id;
         this.nombre = nombre;
-        this.userName = userName;
         this.email = email;
         this.password = password;
         this.usuarioRole = usuarioRole;
     }
 
-    public Usuario(String nombre, String userName, String email, String password, UsuarioRole usuarioRole) {
+    public Usuario(String nombre, String email, String password, UsuarioRole usuarioRole) {
         this.nombre = nombre;
-        this.userName = userName;
         this.email = email;
         this.password = password;
         this.usuarioRole = usuarioRole;
@@ -79,13 +73,6 @@ public class Usuario implements UserDetails {
         this.nombre = nombre;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
 
     public String getEmail() {
         return email;

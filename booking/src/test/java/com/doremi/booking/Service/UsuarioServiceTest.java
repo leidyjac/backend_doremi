@@ -1,14 +1,8 @@
 package com.doremi.booking.Service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
-
-import java.util.Optional;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,30 +12,29 @@ import com.doremi.booking.entity.UsuarioRole;
 import com.doremi.booking.repository.UsuarioRepository;
 import com.doremi.booking.service.impl.UsuarioService;
 
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
 @SpringBootTest
-public class UsarioServiceTest {
-    
+public class UsuarioServiceTest {
+
     @Mock
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
     private UsuarioService usuarioService;
-
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        usuarioService = new UsuarioService(usuarioRepository);
-    }
 
     @Test
     public void testLoadUserByUsername_UsuarioExistente() {
         String username = "marcela.hermosa@gmail.com";
-        Usuario usuario = new Usuario("Marcela", "Administrador", username, "contraseñaEncriptada", UsuarioRole.ROLE_ADMIN);
+        Usuario usuario = new Usuario("Marcela", "marcela.hermosa@gmail.com", "contraseñaEncriptada", UsuarioRole.ROLE_ADMIN);
 
         when(usuarioRepository.findByEmail(username)).thenReturn(Optional.of(usuario));
         UserDetails userDetails = usuarioService.loadUserByUsername(username);
 
         assertEquals(username, userDetails.getUsername());
-
     }
 
     @Test
@@ -57,3 +50,4 @@ public class UsarioServiceTest {
         }
     }
 }
+
