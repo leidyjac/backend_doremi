@@ -34,7 +34,7 @@ public class Usuario implements UserDetails {
     private String email;
     @Column
     @NotBlank(message = "El email no puede estar vacio")
-    @Size( min = 6, message = "La contraseña debe tener minimo 6 caracteres")
+    @Size( min = 8, message = "La contraseña debe tener minimo 8 caracteres")
     private String password;
     @Column
     private UsuarioRole usuarioRole;
