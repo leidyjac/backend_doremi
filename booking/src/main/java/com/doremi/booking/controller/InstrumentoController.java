@@ -1,6 +1,7 @@
 package com.doremi.booking.controller;
 
 import com.doremi.booking.dto.entrada.instrumento.InstrumentoEntradaDto;
+import com.doremi.booking.dto.entrada.modificacion.InstrumentoModificacionEntradaDto;
 import com.doremi.booking.dto.salida.instrumento.InstrumentoMessageSalidaDto;
 import com.doremi.booking.dto.salida.instrumento.InstrumentoSalidaDto;
 import com.doremi.booking.exceptions.ResourceNotCreatedException;
@@ -19,6 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+
 @Slf4j
 @RestController
 @RequestMapping("/instrumentos")
@@ -112,8 +115,48 @@ public class InstrumentoController {
     })
     @GetMapping("buscarPorNombre/{nombre}")
     public ResponseEntity<?> buscarPorNombre (@PathVariable String nombre) {
-        return new ResponseEntity<> (instrumentoService.buscarPorNombre(nombre), HttpStatus.OK);
+        return new ResponseEntity<> (instrumentoService.buscarInstrumentoPorNombre(nombre), HttpStatus.OK);
 
+    }
+
+    @Operation(summary = "Buscar instrumento por Id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Instrumento encontrado exitosamente",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = InstrumentoSalidaDto.class))}),
+            @ApiResponse(responseCode = "400", description = "Id no encontrado",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Instrumento no encontrado",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Server error",
+                    content = @Content)
+    })
+    @GetMapping("buscarPorId/{id}")
+    public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
+        InstrumentoSalidaDto instrumentoSalidaDto = instrumentoService.buscarInstrumentoPorId(id);
+        if (instrumentoSalidaDto != null) {
+            return ResponseEntity.ok(instrumentoSalidaDto); // Instrumento encontrado, respuesta 200
+        } else {
+            log.info("Instrumento no encontrado");
+            return ResponseEntity.notFound().build(); // Instrumento no encontrado, respuesta 404
+        }
+    }
+
+    @Operation(summary = "Modificación de un instrumento")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Instrumento modificado correctamente",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = InstrumentoSalidaDto.class))}),
+            @ApiResponse(responseCode = "400", description = "Bad Request",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Instrumento no encontrado",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Server error",
+                    content = @Content)
+    })
+    @PutMapping("modificar")
+    public ResponseEntity<InstrumentoSalidaDto> modificarInstrumento(@Valid @RequestBody InstrumentoModificacionEntradaDto instrumentoModificado) throws ResourceNotCreatedException {
+        return new ResponseEntity<>(instrumentoService.modificarInstrumento(instrumentoModificado), HttpStatus.OK);
     }
 
 }

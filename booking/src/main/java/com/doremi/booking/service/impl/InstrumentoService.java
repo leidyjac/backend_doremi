@@ -2,6 +2,7 @@ package com.doremi.booking.service.impl;
 
 import com.doremi.booking.dto.entrada.imagen.ImagenEntradaDto;
 import com.doremi.booking.dto.entrada.instrumento.InstrumentoEntradaDto;
+import com.doremi.booking.dto.entrada.modificacion.InstrumentoModificacionEntradaDto;
 import com.doremi.booking.dto.salida.categoria.CategoriaSalidaDto;
 import com.doremi.booking.dto.salida.imagen.ImagenSalidaDto;
 import com.doremi.booking.dto.salida.instrumento.InstrumentoSalidaDto;
@@ -18,9 +19,12 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -98,10 +102,51 @@ public class InstrumentoService implements IInstrumentoService {
 
     }
     @Override
-    public InstrumentoSalidaDto buscarPorNombre(String nombre) {
+    public InstrumentoSalidaDto buscarInstrumentoPorNombre(String nombre) {
         Instrumento instrumento = instrumentoRepository.findByNombre(nombre);
         LOGGER.info("Este es el instumento que estas buscando :{}: ", instrumento);
         return maptoDtoSalida(instrumento);
+    }
+
+
+    @Override
+    public InstrumentoSalidaDto buscarInstrumentoPorId(Long id) {
+        Instrumento instrumentoABuscar = instrumentoRepository.findById(id).orElse(null);
+        if (instrumentoABuscar != null) {
+            return mapEntitytoDtoSalida(instrumentoABuscar);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public InstrumentoSalidaDto modificarInstrumento(InstrumentoModificacionEntradaDto instrumentoModificado) throws ResourceNotCreatedException {
+        InstrumentoSalidaDto instrumentoSalidaDto = null;
+
+        if (buscarInstrumentoPorId(instrumentoModificado.getInstrumento_id()) != null) {
+
+            Categoria categoria = categoriaRepository.findById(instrumentoModificado.getCategoria())
+                    .orElseThrow(() -> new ResourceNotCreatedException("La categoría no existe"));
+
+            LOGGER.info ("Categoria -> " + categoria);
+            Instrumento instrumentoARegistrar = mapDtoModificadoToEntity(instrumentoModificado);
+
+            instrumentoARegistrar.setCategoria(categoria);
+
+            instrumentoSalidaDto = mapEntitytoDtoSalida(instrumentoRepository.save (instrumentoARegistrar));
+
+            LOGGER.info("El instrumento: {}, fue modificado exitosamente", instrumentoSalidaDto);
+
+            List<Imagen> imagen = imagenRepository.saveAll (mapToEntityImagenList(instrumentoModificado.getImagen(),instrumentoSalidaDto.getInstrumento_id()));
+            LOGGER.info("Imagen guardada -> " + imagen);
+
+            LOGGER.info("Instrumento guardado: {}", instrumentoSalidaDto);
+
+
+        }else{
+            LOGGER.error(" El instrumento: {}, no fue modificado porque no se encontró", instrumentoSalidaDto);
+        }
+        return instrumentoSalidaDto;
     }
 
     @Override
@@ -150,5 +195,14 @@ public class InstrumentoService implements IInstrumentoService {
 
         return instrumentoSalidaDto;
     }
+
+    public Instrumento mapDtoModificadoToEntity(InstrumentoModificacionEntradaDto instrumentoModificado){
+        return modelMapper.map(instrumentoModificado, Instrumento.class);
+    }
+
+    public InstrumentoSalidaDto mapEntitytoDtoSalida(Instrumento instrumento){
+        return modelMapper.map(instrumento, InstrumentoSalidaDto.class);
+    }
+
 
 }
