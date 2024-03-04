@@ -1,15 +1,10 @@
 package com.doremi.booking.entity;
 
-import org.springframework.data.annotation.Id;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -39,13 +34,6 @@ public class Usuario implements UserDetails {
     @Column
     private UsuarioRole usuarioRole;
 
-    public Usuario(Long id, String nombre, String email, String password, UsuarioRole usuarioRole) {
-        this.id = id;
-        this.nombre = nombre;
-        this.email = email;
-        this.password = password;
-        this.usuarioRole = usuarioRole;
-    }
 
     public Usuario(String nombre, String email, String password, UsuarioRole usuarioRole) {
         this.nombre = nombre;
