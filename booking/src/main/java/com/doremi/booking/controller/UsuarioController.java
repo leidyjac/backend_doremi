@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.doremi.booking.dto.entrada.instrumento.usuario.UsuarioEntradaDTO;
+import com.doremi.booking.dto.entrada.usuario.UsuarioEntradaDTO;
 import com.doremi.booking.dto.salida.Usuario.UsuarioSalidaDTO;
 import com.doremi.booking.exceptions.ResourceNotCreatedException;
 import com.doremi.booking.service.IUsuarioService;
@@ -36,7 +36,12 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
     
-    @Operation(summary  = "Registro de un nuevo Usuario")
+    /**
+ * @param usuario
+ * @return
+ * @throws ResourceNotCreatedException
+ */
+@Operation(summary  = "Registro de un nuevo Usuario")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Usuario Agregado correctamente",
                      content = {@Content(mediaType = "aplication/json",

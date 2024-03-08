@@ -1,4 +1,4 @@
-package com.doremi.booking.dto.entrada.instrumento.usuario;
+package com.doremi.booking.dto.entrada.usuario;
 
 import com.doremi.booking.entity.UsuarioRole;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
