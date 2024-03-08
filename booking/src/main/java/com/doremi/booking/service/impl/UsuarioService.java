@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.doremi.booking.dto.entrada.instrumento.usuario.UsuarioEntradaDTO;
+import com.doremi.booking.dto.entrada.usuario.UsuarioEntradaDTO;
 import com.doremi.booking.dto.salida.Usuario.UsuarioSalidaDTO;
 import com.doremi.booking.entity.Usuario;
 import com.doremi.booking.exceptions.ResourceNotCreatedException;

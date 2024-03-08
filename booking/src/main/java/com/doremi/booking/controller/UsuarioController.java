@@ -53,8 +53,9 @@ public class UsuarioController {
     })
     @PostMapping("agregar")
     public ResponseEntity<UsuarioSalidaDTO> agregarUsuario(@Valid @RequestBody UsuarioEntradaDTO usuario) throws ResourceNotCreatedException {
-        return new ResponseEntity<>(usuarioService.agregarUsuario(usuario), HttpStatus.CREATED);
-    }
+         return new ResponseEntity<>(usuarioService.agregarUsuario(usuario), HttpStatus.CREATED);
+       }
+
     @Operation(summary = "Listado de Usuarios")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Listado de Usuarios obtenido correctamente",
