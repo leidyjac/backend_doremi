@@ -1,6 +1,6 @@
 package com.doremi.booking.service.impl;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -8,28 +8,33 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.doremi.booking.dto.entrada.usuario.UsuarioEntradaDTO;
 import com.doremi.booking.dto.salida.Usuario.UsuarioSalidaDTO;
 import com.doremi.booking.entity.Usuario;
+import com.doremi.booking.entity.UsuarioRole;
 import com.doremi.booking.exceptions.ResourceNotCreatedException;
 import com.doremi.booking.repository.UsuarioRepository;
 import com.doremi.booking.service.IUsuarioService;
 
-
 @Service
-public class UsuarioService implements IUsuarioService, UserDetails {
+public class UsuarioService implements IUsuarioService, UserDetailsService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Usuario.class);
-    private UsuarioRepository usuarioRepository;
+    private static final Logger LOGGER = LoggerFactory.getLogger(UsuarioService.class);
+    private final UsuarioRepository usuarioRepository;
     private final ModelMapper modelMapper;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, ModelMapper modelMapper) {
+    public UsuarioService(UsuarioRepository usuarioRepository, ModelMapper modelMapper, BCryptPasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.modelMapper = modelMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -47,12 +52,12 @@ public class UsuarioService implements IUsuarioService, UserDetails {
             throw new ResourceNotCreatedException("El usuario ya se encuentra en la base de datos");
         }
 
-        Usuario usuario = maptoEntity(usuarioEntradaDTO);
+        Usuario usuario = mapToEntity(usuarioEntradaDTO);
         usuario.setPassword(hashPassword(usuarioEntradaDTO.getPassword())); // Hash password
 
         try {
             Usuario usuarioAgregado = usuarioRepository.save(usuario);
-            UsuarioSalidaDTO usuarioSalidaDTO = maptoDtoSalida(usuarioAgregado);
+            UsuarioSalidaDTO usuarioSalidaDTO = mapToDtoSalida(usuarioAgregado);
             LOGGER.info("Usuario guardado: {}", usuarioSalidaDTO);
             return usuarioSalidaDTO;
         } catch (Exception e) {
@@ -64,87 +69,67 @@ public class UsuarioService implements IUsuarioService, UserDetails {
     private boolean isValidEmail(String email) {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
         Pattern pattern = Pattern.compile(emailRegex);
-        java.util.regex.Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
+        return pattern.matcher(email).matches();
     }
 
     private boolean isValidPassword(String password) {
-        if (password.length() < 6) {
-            return false;
-        }  
-        if (!password.matches(".*[A-Z].*")) {
-            return false;
-        }
-        if (!password.matches(".*\\d.*")) {
-            return false;
-        }
-        if (!password.matches(".*[^A-Za-z0-9].*")) {
-            return false;
-        }
-        return true;
+        return password.length() >= 6 &&
+               password.matches(".*[A-Z].*") &&
+               password.matches(".*\\d.*") &&
+               password.matches(".*[^A-Za-z0-9].*");
     }
-    
 
     private String hashPassword(String password) {
-    String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-        return hashedPassword;
-}
+        return passwordEncoder.encode(password);
+    }
 
-    public Usuario maptoEntity(UsuarioEntradaDTO usuarioEntradaDTO) {
+    private Usuario mapToEntity(UsuarioEntradaDTO usuarioEntradaDTO) {
         return modelMapper.map(usuarioEntradaDTO, Usuario.class);
     }
 
-    public UsuarioSalidaDTO maptoDtoSalida(Usuario usuario) {
+    private UsuarioSalidaDTO mapToDtoSalida(Usuario usuario) {
         return modelMapper.map(usuario, UsuarioSalidaDTO.class);
     }
 
     @Override
     public List<UsuarioSalidaDTO> listarUsuarios() {
         List<Usuario> listaUsuarios = usuarioRepository.findAll();
-        LOGGER.info("Listado de Usuarios", listaUsuarios);
-        return listaUsuarios.stream().map(this::maptoDtoSalida).toList();
+        LOGGER.info("Listado de Usuarios: {}", listaUsuarios);
+        return listaUsuarios.stream().map(this::mapToDtoSalida).toList();
     }
 
     @Override
     public UsuarioSalidaDTO buscarPorEmail(String email) {
         Usuario usuario = usuarioRepository.findByEmail(email);
-        LOGGER.info("Este es el usuario que buscas :{}: ", usuario);
-        return maptoDtoSalida(usuario);
+        LOGGER.info("Este es el usuario que buscas: {}", usuario);
+        return mapToDtoSalida(usuario);
     }
+    
 
-    // Métodos UserDetails no implementados
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        throw new UnsupportedOperationException("Unimplemented method 'getAuthorities'");
-    }
 
     @Override
-    public String getPassword() {
-        throw new UnsupportedOperationException("Unimplemented method 'getPassword'");
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Usuario usuario = usuarioRepository.findByEmail(username);
+        if (usuario == null) {
+            throw new UsernameNotFoundException("Usuario no encontrado con email: " + username);
+        }
+    
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for (UsuarioRole role : UsuarioRole.getAllRoles()) {
+            if (usuario.getUsuarioRole().contains(role)) {
+                authorities.add(new SimpleGrantedAuthority(role.name()));
+            }
+        }
+    
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(usuario.getEmail())
+                .password(usuario.getPassword())
+                .authorities(authorities)
+                .build();
     }
+    
 
-    @Override
-    public String getUsername() {
-        throw new UnsupportedOperationException("Unimplemented method 'getUsername'");
-    }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        throw new UnsupportedOperationException("Unimplemented method 'isAccountNonExpired'");
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        throw new UnsupportedOperationException("Unimplemented method 'isAccountNonLocked'");
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        throw new UnsupportedOperationException("Unimplemented method 'isCredentialsNonExpired'");
-    }
-
-    @Override
-    public boolean isEnabled() {
-        throw new UnsupportedOperationException("Unimplemented method 'isEnabled'");
-    }
+    
 }
+
