@@ -109,24 +109,28 @@ public class UsuarioService implements IUsuarioService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Usuario usuario = usuarioRepository.findByEmail(username);
-        if (usuario == null) {
-            throw new UsernameNotFoundException("Usuario no encontrado con email: " + username);
-        }
-    
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        for (UsuarioRole role : UsuarioRole.getAllRoles()) {
-            if (usuario.getUsuarioRole().contains(role)) {
-                authorities.add(new SimpleGrantedAuthority(role.name()));
-            }
-        }
-    
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(usuario.getEmail())
-                .password(usuario.getPassword())
-                .authorities(authorities)
-                .build();
+         Usuario usuario = usuarioRepository.findByEmail(username);
+         if (usuario == null) {
+             throw new UsernameNotFoundException("Usuario no encontrado con email: " + username);
     }
+
+        // Obtener el rol del usuario
+        UsuarioRole role = usuario.getUsuarioRole();
+
+        // Crear una autoridad basada en el rol del usuario
+        GrantedAuthority authority = new SimpleGrantedAuthority(role.name());
+
+        // Crear la lista de autoridades
+        List<GrantedAuthority> authorities = new ArrayList<>();
+         authorities.add(authority);
+
+        return org.springframework.security.core.userdetails.User.builder()
+            .username(usuario.getEmail())
+            .password(usuario.getPassword())
+            .authorities(authorities)
+            .build();
+}
+
     
 
 

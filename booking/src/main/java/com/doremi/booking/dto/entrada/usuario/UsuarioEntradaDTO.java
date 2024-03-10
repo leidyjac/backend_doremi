@@ -22,7 +22,6 @@ public class UsuarioEntradaDTO {
     @NotBlank(message = "La cuenta debe tener contraseña")
     @Size( min = 8, message = "La contraseña debe tener minimo 8 caracteres")
     private String password;
-    @ManyToOne
     private UsuarioRole usuarioRole;
     
     public UsuarioEntradaDTO() {
