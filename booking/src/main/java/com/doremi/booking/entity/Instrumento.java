@@ -18,7 +18,7 @@ public class Instrumento {
     @Column(name = "instrumento_id")
     private Long instrumento_id;
     private String nombre;
-
+    @Column(length = 1000)
     private String descripcion;
 
     @ManyToOne(fetch = FetchType.EAGER)
