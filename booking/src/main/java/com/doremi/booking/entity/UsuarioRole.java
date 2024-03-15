@@ -4,10 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public enum UsuarioRole {
+public enum Role {
     ROLE_USER,
     ROLE_ADMIN,
-    ROLE_ANONYMOUS;
 
     public static List<UsuarioRole> getAllRoles() {
         return Arrays.asList(UsuarioRole.values());
