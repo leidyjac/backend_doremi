@@ -31,6 +31,9 @@ public class SecurityConfig {
             .authorizeHttpRequests(authRequest ->
               authRequest
                 .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/accion/**", "/instrumentos/agregar",
+                 "/instrumentos/eliminar/{id}").hasRole("ADMIN")
+                .requestMatchers("/istrumentos/**").hasAnyRole("ADMIN","USER")
                 .anyRequest().authenticated()
                 )
             .sessionManagement(sessionManager->
