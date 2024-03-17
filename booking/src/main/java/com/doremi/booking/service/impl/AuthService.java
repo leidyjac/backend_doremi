@@ -1,5 +1,7 @@
 package com.doremi.booking.service.impl;
 
+import java.util.List;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +15,7 @@ import com.doremi.booking.dto.entrada.usuario.RegisterRequest;
 import com.doremi.booking.dto.salida.Usuario.AuthResponse;
 import com.doremi.booking.entity.Role;
 import com.doremi.booking.entity.User;
+import com.doremi.booking.exceptions.ResourceNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
