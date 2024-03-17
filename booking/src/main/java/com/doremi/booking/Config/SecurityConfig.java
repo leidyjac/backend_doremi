@@ -32,8 +32,8 @@ public class SecurityConfig {
               authRequest
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/accion/**", "/instrumentos/agregar",
-                 "/instrumentos/eliminar/{id}").hasRole("ADMIN")
-                .requestMatchers("/istrumentos/**").hasAnyRole("ADMIN","USER")
+                 "/instrumentos/eliminar/{id}", "/categorias/agregar", "/categorias/eliminar/{id}").hasRole("ADMIN")
+                .requestMatchers("/instrumentos/**","/categoria/listar").hasAnyRole("ADMIN","USER")
                 .anyRequest().authenticated()
                 )
             .sessionManagement(sessionManager->
