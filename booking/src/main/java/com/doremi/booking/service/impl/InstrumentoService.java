@@ -55,17 +55,17 @@ public class InstrumentoService implements IInstrumentoService {
             Categoria categoria = categoriaRepository.findById(instrumento.getCategoria())
                     .orElseThrow(() -> new ResourceNotCreatedException("La categoría no existe"));
 
-            LOGGER.info ("Categoria -> " + categoria);
+            LOGGER.info("Categoria -> " + categoria);
             Instrumento instrumentoARegistrar = maptoEntity(instrumento);
 
             instrumentoARegistrar.setCategoria(categoria);
 
 
-            Instrumento instrumentoAgregado = instrumentoRepository.save (instrumentoARegistrar);
+            Instrumento instrumentoAgregado = instrumentoRepository.save(instrumentoARegistrar);
 
             LOGGER.info("instrumento agregado -> " + instrumentoAgregado);
 
-            List<Imagen> imagen = imagenRepository.saveAll (mapToEntityImagenList(instrumento.getImagen(),instrumentoAgregado.getInstrumento_id()));
+            List<Imagen> imagen = imagenRepository.saveAll(mapToEntityImagenList(instrumento.getImagen(), instrumentoAgregado.getInstrumento_id()));
             LOGGER.info("Imagen guardada -> " + imagen);
 
             InstrumentoSalidaDto instrumentoSalidaDto = maptoDtoSalida(instrumentoAgregado);
@@ -80,6 +80,7 @@ public class InstrumentoService implements IInstrumentoService {
         }
 
     }
+
     @Override
     public List<InstrumentoSalidaDto> listarInstrumentos() {
         List<Instrumento> listaInstrumentos = instrumentoRepository.findAll();
@@ -101,26 +102,34 @@ public class InstrumentoService implements IInstrumentoService {
         }
 
     }
+
     @Override
-    public InstrumentoSalidaDto buscarInstrumentoPorNombre(String nombre) {
-        Instrumento instrumento = instrumentoRepository.findByNombre(nombre);
-        LOGGER.info("Este es el instumento que estas buscando :{}: ", instrumento);
-        return maptoDtoSalida(instrumento);
+    public InstrumentoSalidaDto buscarInstrumentoPorNombre(String nombre) throws ResourceNotFoundException {
+        Instrumento instrumentoABuscar = instrumentoRepository.findByNombre(nombre);
+
+        if (instrumentoABuscar != null) {
+            LOGGER.info("El instrumento {} se ha encontrado.", nombre);
+            return mapEntitytoDtoSalida(instrumentoABuscar);
+        } else {
+            LOGGER.error("No se encuentra el instrumento con el nombre: {}", nombre);
+            throw new ResourceNotFoundException("El instrumento no se encuentra con el nombre " + nombre);
+        }
     }
 
 
     @Override
-    public InstrumentoSalidaDto buscarInstrumentoPorId(Long id) {
+    public InstrumentoSalidaDto buscarInstrumentoPorId(Long id) throws ResourceNotFoundException {
         Instrumento instrumentoABuscar = instrumentoRepository.findById(id).orElse(null);
         if (instrumentoABuscar != null) {
             return mapEntitytoDtoSalida(instrumentoABuscar);
         } else {
-            return null;
+            LOGGER.error("No se encuentra el instrumento con el ID: {}", id);
+            throw new ResourceNotFoundException("El instrumento no se encuentra con el id " + id);
         }
     }
 
     @Override
-    public InstrumentoSalidaDto modificarInstrumento(InstrumentoModificacionEntradaDto instrumentoModificado) throws ResourceNotCreatedException {
+    public InstrumentoSalidaDto modificarInstrumento(InstrumentoModificacionEntradaDto instrumentoModificado) throws ResourceNotCreatedException, ResourceNotFoundException {
         InstrumentoSalidaDto instrumentoSalidaDto = null;
 
         if (buscarInstrumentoPorId(instrumentoModificado.getInstrumento_id()) != null) {
@@ -145,8 +154,22 @@ public class InstrumentoService implements IInstrumentoService {
 
         }else{
             LOGGER.error(" El instrumento: {}, no fue modificado porque no se encontró", instrumentoSalidaDto);
+            throw new ResourceNotCreatedException("El instrumento no se pudo modificar porque no se encuentra en la base de datos");
         }
         return instrumentoSalidaDto;
+    }
+
+    @Override
+    public List<InstrumentoSalidaDto> buscarInstrumentosPorNombre(String nombre) throws ResourceNotFoundException {
+        List<Instrumento> instrumentosEncontrados = instrumentoRepository.findByNombreContainingIgnoreCase(nombre);
+
+        if(!instrumentosEncontrados.isEmpty()){
+            LOGGER.info("Estos instrumentos coinciden con la búsqueda");
+            return instrumentosEncontrados.stream().map(this::maptoDtoSalida).toList();
+        }else{
+            LOGGER.info("No existen coincidencias con el nombre ingresado");
+            throw new ResourceNotFoundException("No existen coincidencias con el nombre ingresado");
+        }
     }
 
     @Override

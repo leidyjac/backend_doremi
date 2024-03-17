@@ -101,6 +101,24 @@ public class InstrumentoController {
         return new ResponseEntity<>(instrumentoMessageSalidaDto, HttpStatus.OK); //REVISAR
     }
 
+    @Operation(summary = "Buscar instrumento por keyWord")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Instrumentos encontrados exitosamente",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = InstrumentoSalidaDto.class))}),
+            @ApiResponse(responseCode = "400", description = "Nombre no encontrado",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Instrumentos no encontrados",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Server error",
+                    content = @Content)
+    })
+    @GetMapping("buscarPorKeyWord/{nombre}")
+    public ResponseEntity<?> buscarPorKeyWord (@PathVariable String nombre) throws ResourceNotFoundException {
+        return new ResponseEntity<> (instrumentoService.buscarInstrumentosPorNombre(nombre), HttpStatus.OK);
+
+    }
+
     @Operation(summary = "Buscar instrumento por nombre")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Instrumento encontrado exitosamente",
@@ -114,7 +132,7 @@ public class InstrumentoController {
                     content = @Content)
     })
     @GetMapping("buscarPorNombre/{nombre}")
-    public ResponseEntity<?> buscarPorNombre (@PathVariable String nombre) {
+    public ResponseEntity<?> buscarPorNombre (@PathVariable String nombre) throws ResourceNotFoundException {
         return new ResponseEntity<> (instrumentoService.buscarInstrumentoPorNombre(nombre), HttpStatus.OK);
 
     }
@@ -132,7 +150,7 @@ public class InstrumentoController {
                     content = @Content)
     })
     @GetMapping("buscarPorId/{id}")
-    public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<?> buscarPorId(@PathVariable Long id) throws ResourceNotFoundException{
         InstrumentoSalidaDto instrumentoSalidaDto = instrumentoService.buscarInstrumentoPorId(id);
         if (instrumentoSalidaDto != null) {
             return ResponseEntity.ok(instrumentoSalidaDto); // Instrumento encontrado, respuesta 200
@@ -155,7 +173,7 @@ public class InstrumentoController {
                     content = @Content)
     })
     @PutMapping("modificar")
-    public ResponseEntity<InstrumentoSalidaDto> modificarInstrumento(@Valid @RequestBody InstrumentoModificacionEntradaDto instrumentoModificado) throws ResourceNotCreatedException {
+    public ResponseEntity<InstrumentoSalidaDto> modificarInstrumento(@Valid @RequestBody InstrumentoModificacionEntradaDto instrumentoModificado) throws ResourceNotCreatedException, ResourceNotFoundException {
         return new ResponseEntity<>(instrumentoService.modificarInstrumento(instrumentoModificado), HttpStatus.OK);
     }
 

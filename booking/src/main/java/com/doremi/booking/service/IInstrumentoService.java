@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface IInstrumentoService {
 
-    InstrumentoSalidaDto agregarInstrumento (InstrumentoEntradaDto instrumento) throws ResourceNotCreatedException;
+    InstrumentoSalidaDto agregarInstrumento(InstrumentoEntradaDto instrumento) throws ResourceNotCreatedException;
 
     List<InstrumentoSalidaDto> listarInstrumentos();
 
@@ -19,9 +19,12 @@ public interface IInstrumentoService {
 
     void eliminarInstrumento(Long id) throws ResourceNotFoundException;
 
-    InstrumentoSalidaDto buscarInstrumentoPorNombre (String nombre);
+    InstrumentoSalidaDto buscarInstrumentoPorNombre(String nombre) throws ResourceNotFoundException;
 
-    InstrumentoSalidaDto buscarInstrumentoPorId (Long id);
+    InstrumentoSalidaDto buscarInstrumentoPorId(Long id) throws ResourceNotFoundException;
 
-    InstrumentoSalidaDto modificarInstrumento(InstrumentoModificacionEntradaDto instrumentoModificado) throws ResourceNotCreatedException;
+    InstrumentoSalidaDto modificarInstrumento(InstrumentoModificacionEntradaDto instrumentoModificado) throws ResourceNotCreatedException, ResourceNotFoundException;
+
+
+    List<InstrumentoSalidaDto> buscarInstrumentosPorNombre(String nombre) throws ResourceNotFoundException;
 }
