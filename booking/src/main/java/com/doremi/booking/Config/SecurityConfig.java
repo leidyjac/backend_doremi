@@ -13,11 +13,11 @@ import com.doremi.booking.Jwt.JwtAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
 
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authProvider;
 
@@ -43,7 +43,4 @@ public class SecurityConfig {
             
     }
 
-                
-                  
-    }
-
+}

@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
-public class ApplicationConfig{
+public class ApplicationConfig {
 
     private final UserRepository userRepository;
 
@@ -44,7 +44,7 @@ public class ApplicationConfig{
     @Bean
     public UserDetailsService userDetailService() {
         return username -> userRepository.findByUsername(username)
-        .orElseThrow(()-> new UsernameNotFoundException("User not found"));
+        .orElseThrow(()-> new UsernameNotFoundException("User not fournd"));
     }
 
 }

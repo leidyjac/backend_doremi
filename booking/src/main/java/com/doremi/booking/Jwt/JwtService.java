@@ -1,4 +1,4 @@
-package com.doremi.booking.service.impl;
+package com.doremi.booking.Jwt;
 
 import java.security.Key;
 import java.util.Date;
