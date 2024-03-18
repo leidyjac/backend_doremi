@@ -30,9 +30,10 @@ public class SecurityConfig {
                 .disable())
             .authorizeHttpRequests(authRequest ->
               authRequest
-                .requestMatchers("/auth/**","/instrumentos/**", "").permitAll()
+                .requestMatchers("/auth/**","/instrumentos/**").permitAll()
                 .requestMatchers("/accion/**", "/instrumentos/agregar",
-                 "/instrumentos/eliminar/{id}", "/categorias/agregar", "/categorias/eliminar/{id}"
+                 "/instrumentos/eliminar/{id}", "/categorias/agregar", "/categorias/eliminar/{id}",
+                 "/usuario/**"
                 ).hasRole("ADMIN")
                 .anyRequest().authenticated()
                 )
