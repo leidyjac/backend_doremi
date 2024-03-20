@@ -30,11 +30,8 @@ public class SecurityConfig {
                 .disable())
             .authorizeHttpRequests(authRequest ->
               authRequest
-                .requestMatchers("/auth/**","/instrumentos/**").permitAll()
-                .requestMatchers("/accion/**", "/instrumentos/agregar",
-                 "/instrumentos/eliminar/{id}", "/categorias/agregar", "/categorias/eliminar/{id}",
-                 "/usuario/**"
-                ).hasRole("ADMIN")
+                .requestMatchers("/auth/**","/instrumento/**").permitAll()
+                .requestMatchers("/accion/**","categoria/**" ).hasRole("ADMIN")
                 .anyRequest().authenticated()
                 )
             .sessionManagement(sessionManager->
