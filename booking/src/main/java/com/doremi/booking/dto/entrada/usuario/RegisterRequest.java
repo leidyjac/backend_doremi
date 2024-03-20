@@ -14,14 +14,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegisterRequest {
-    @NotNull(message = "El email no puede ser nulo")
-    @NotBlank(message = "Debe especificarse el email")
-    @Email(message = "Debe tener formato de email")
+    @NotNull(message = "El username no puede ser nulo")
+    @NotBlank(message = "Debe especificarse el nombre de usuario")
     String username;
     @NotNull(message = "la clave no puede ser nula")
     @NotBlank(message = "Debe especificarse la clave del usuario")
     @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
     String password;
+    @NotNull(message = "Eemail no puede ser nulo")
+    @NotBlank(message = "Debe especificarse el email")
+    @Email(message = "Debe tener formato de email")
+    String email;
     @NotNull(message = "El nombre del Usuario no puede ser nulo")
     @NotBlank(message = "Debe especificarse el nombre del usuario")
     String nombre; 
