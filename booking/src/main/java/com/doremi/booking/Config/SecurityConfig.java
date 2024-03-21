@@ -28,10 +28,9 @@ public class SecurityConfig {
             .csrf(csrf -> 
                 csrf
                 .disable())
-            .authorizeHttpRequests(authRequest ->
-              authRequest
-                .requestMatchers("/auth/**","/instrumento/**").permitAll()
-                .requestMatchers("/accion/**","categoria/**" ).hasRole("ADMIN")
+            .authorizeHttpRequests((authz) -> authz
+                .requestMatchers("/auth/**","/instrumentos/**").permitAll()
+             //   .requestMatchers("/accion/**","categoria/**" ).hasRole("ADMIN")
                 .anyRequest().authenticated()
                 )
             .sessionManagement(sessionManager->

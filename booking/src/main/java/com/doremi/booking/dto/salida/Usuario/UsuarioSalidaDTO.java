@@ -12,14 +12,13 @@ import lombok.NoArgsConstructor;
 public class UsuarioSalidaDTO {
     Integer id;
     String username;
-    String email;
     String nombre;
     String apellido;
     Role role;
     @Override
     
     public String toString() {
-        return "UsuarioSalidaDTO [id=" + id + ", username=" + username + ", email=" + email + ", nombre=" + nombre
+        return "UsuarioSalidaDTO [id=" + id + ", username=" + username + ", nombre=" + nombre
                 + ", apellido=" + apellido + ", role=" + role + "]";
     }
     
