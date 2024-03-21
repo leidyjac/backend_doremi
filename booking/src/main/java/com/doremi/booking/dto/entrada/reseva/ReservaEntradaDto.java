@@ -9,8 +9,8 @@ import java.time.LocalDate;
 
 public class ReservaEntradaDto {
 
-    @NotNull(message = "El usuario no puede ser nulo")
-   private Long usuarioId;
+   /* @NotNull(message = "El usuario no puede ser nulo")
+   private Long usuarioId;*/
     @NotNull(message = "El instrumento no puede ser nulo")
    private Long instrumentoId;
 
