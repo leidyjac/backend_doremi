@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .disable())
             .authorizeHttpRequests(authRequest ->
               authRequest
-                .requestMatchers("/auth/**","/instrumentos/**", "").permitAll()
+                .requestMatchers("/auth/**","/instrumentos/**", "categoria/listar").permitAll()
                 .requestMatchers("/accion/**", "/instrumentos/agregar",
                  "/instrumentos/eliminar/{id}", "/categorias/agregar", "/categorias/eliminar/{id}"
                 ).hasRole("ADMIN")
