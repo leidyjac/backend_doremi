@@ -29,8 +29,13 @@ public class SecurityConfig {
                 csrf
                 .disable())
             .authorizeHttpRequests((authz) -> authz
-                .requestMatchers("/auth/**","/instrumentos/**").permitAll()
-             //   .requestMatchers("/accion/**","categoria/**" ).hasRole("ADMIN")
+                .requestMatchers("/auth/**","/usuario/**", 
+                "/categoria/listar" , "/instrumentos/listaraleatorios", 
+                "/instrumentos/buscarPorKeyWord/**","/instrumentos/buscarPorNombre/**",
+                 "/instrumentos/buscarPorId/**").permitAll()
+                .requestMatchers("/accion/**","/categoria/agregar","/categoria/eliminar/**",
+                 "/instrumentos/agregar", "/instrumentos/eliminar/**", "/instrumentos/modificar",
+                 "/instrumentos/listar","usuario/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 )
             .sessionManagement(sessionManager->

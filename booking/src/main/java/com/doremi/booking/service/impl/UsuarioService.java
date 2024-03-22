@@ -24,14 +24,15 @@ public class UsuarioService implements IUsuarioService{
 
     private final ModelMapper modelMapper;
     private final UserRepository userRepository;
+   
     private static final Logger LOGGER = LoggerFactory.getLogger(UsuarioService.class);
 
 
     @Override
     public List<UsuarioSalidaDTO> listarUsuarios() {
-        List<User> ListaUsuarios = userRepository.findAll();
-        LOGGER.info("Listado de Usuarios {}", ListaUsuarios);
-        return ListaUsuarios.stream().map(this::maptoDtoSalidaUsuario).toList();
+        List<User> listaUsuarios = userRepository.findAll();
+        LOGGER.info("Listado de Usuarios {}", listaUsuarios);
+        return listaUsuarios.stream().map(this::maptoDtoSalidaUsuario).toList();
       }
 
       @Override
