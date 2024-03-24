@@ -215,6 +215,7 @@ public class InstrumentoService implements IInstrumentoService {
         instrumentoSalidaDto.setNombre(instrumento.getNombre());
         instrumentoSalidaDto.setCategoria(new CategoriaSalidaDto(instrumento.getCategoria().getCategoria_id(),instrumento.getCategoria().getNombre(), instrumento.getCategoria().getDescripcion(), instrumento.getCategoria().getImagen()));
         instrumentoSalidaDto.setDescripcion(instrumento.getDescripcion());
+        instrumentoSalidaDto.setPrecioDia(instrumento.getPrecioDia());
         List<ImagenSalidaDto> imagenSalidaDto = modelMapper.map(instrumento.getImagenes(), new TypeToken<List<ImagenSalidaDto>>() {}.getType());
         instrumentoSalidaDto.setImagen(imagenSalidaDto);
 
