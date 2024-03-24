@@ -7,12 +7,15 @@ import com.doremi.booking.exceptions.ResourceNotCreatedException;
 import com.doremi.booking.exceptions.ResourceNotFoundException;
 import com.doremi.booking.repository.CategoriaRepository;
 import com.doremi.booking.service.ICategoriaService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,6 +27,8 @@ public class CategoriaService implements ICategoriaService {
     private static final Logger LOGGER = LoggerFactory.getLogger(CategoriaService.class);
 
     private CategoriaRepository categoriaRepository;
+    @PersistenceContext
+    private EntityManager entityManager;
     private ModelMapper modelMapper;
 
 
@@ -51,10 +56,15 @@ public class CategoriaService implements ICategoriaService {
         }
     }
 
+    @Transactional
     @Override
     public String eliminarCategoria(Long id) throws ResourceNotFoundException {
         Categoria categoriaABuscar = categoriaRepository.findById(id).orElse(null);
         if(categoriaABuscar != null){
+            // Eliminar los instrumentos asociados a la categoría
+            entityManager.createQuery("DELETE FROM Instrumento WHERE categoria = :categoria")
+                    .setParameter("categoria", categoriaABuscar)
+                    .executeUpdate();
             categoriaRepository.deleteById(id);
             LOGGER.warn("Se eliminó la categoría con ID: {} ", id);
             return "Categoría eliminada exitosamente";

@@ -22,6 +22,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -47,7 +49,7 @@ public class InstrumentoService implements IInstrumentoService {
         this.imagenRepository = imagenRepository;
         this.modelMapper = modelMapper;
     }
-
+    @Transactional
     @Override
     public InstrumentoSalidaDto agregarInstrumento(InstrumentoEntradaDto instrumento) throws ResourceNotCreatedException {
         if ((instrumentoRepository.findByNombre(instrumento.getNombre()) == null)) {

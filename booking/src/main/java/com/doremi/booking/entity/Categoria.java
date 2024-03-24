@@ -23,13 +23,9 @@ public class Categoria {
 
     private String imagen;
 
-    @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Instrumento> instrumentos;
-
     public Categoria(String nombre, String descripcion, String imagen, List<Instrumento> instrumentos) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.imagen = imagen;
-        this.instrumentos = instrumentos;
     }
 }
