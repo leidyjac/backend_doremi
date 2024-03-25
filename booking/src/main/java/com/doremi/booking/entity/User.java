@@ -30,7 +30,7 @@ import lombok.NoArgsConstructor;
 public class User implements UserDetails {
     @Id
     @GeneratedValue
-    Integer id;
+    Long usuario_id;
     @Basic
     @Column(nullable = false)
     String username;

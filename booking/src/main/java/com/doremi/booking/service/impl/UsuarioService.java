@@ -56,6 +56,16 @@ public class UsuarioService implements IUsuarioService{
         return modelMapper.map(usuario, UsuarioSalidaDTO.class);
     }
 
+    @Override
+    public UsuarioSalidaDTO buscarUsuarioPorId(Long id) throws ResourceNotFoundException {
+        User usuarioAbuscar = userRepository.findById(id).orElse(null);
+        if (usuarioAbuscar != null){
+            return maptoDtoSalidaUsuario(usuarioAbuscar);
+        }else{
+            LOGGER.error("No se encuentra el usuario con el ID: {}", id);
+        throw new ResourceNotFoundException("El Usuario no esta con el id" + id);}
+    }
+
     
     
 }

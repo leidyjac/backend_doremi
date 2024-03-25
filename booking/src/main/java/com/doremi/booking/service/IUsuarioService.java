@@ -12,5 +12,6 @@ public interface IUsuarioService {
 
     List<UsuarioSalidaDTO> listarUsuarios();
     UsuarioSalidaDTO cambiarRole(UsuarioCambioRoleEntradaDTO CambioRole) throws ResourceNotCreatedException, ResourceNotFoundException;
+    UsuarioSalidaDTO buscarUsuarioPorId(Long id) throws ResourceNotFoundException;
 
 } 
