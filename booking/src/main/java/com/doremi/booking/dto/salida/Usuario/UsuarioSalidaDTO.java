@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class UsuarioSalidaDTO {
-    Integer id;
+    Long usuario_id;
     String username;
     String nombre;
     String apellido;
@@ -18,7 +18,7 @@ public class UsuarioSalidaDTO {
     @Override
     
     public String toString() {
-        return "UsuarioSalidaDTO [id=" + id + ", username=" + username + ", nombre=" + nombre
+        return "UsuarioSalidaDTO [id=" + usuario_id + ", username=" + username + ", nombre=" + nombre
                 + ", apellido=" + apellido + ", role=" + role + "]";
     }
     

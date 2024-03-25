@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -64,4 +65,27 @@ public class UsuarioController {
         UsuarioSalidaDTO usuarioModificado = usuarioService.cambiarRole(cambioRole);
         return new ResponseEntity<>(usuarioModificado, HttpStatus.OK);
     }
+
+        @Operation(summary = "Buscar usuario por Id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario encontrado exitosamente",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UsuarioSalidaDTO.class))}),
+            @ApiResponse(responseCode = "400", description = "Id no encontrado",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Server error",
+                    content = @Content)
+    })
+    @GetMapping("buscarPorId/{id}")
+    public ResponseEntity<?> buscarPorId(@PathVariable Long id) throws ResourceNotFoundException{
+        UsuarioSalidaDTO usuarioSalidaDTO = usuarioService.buscarUsuarioPorId(id);
+        if (usuarioSalidaDTO != null) {
+            return ResponseEntity.ok(usuarioSalidaDTO); // Instrumento encontrado, respuesta 200
+        } else {
+
+            return ResponseEntity.notFound().build(); // Instrumento no encontrado, respuesta 404
+        }}
+
 }
