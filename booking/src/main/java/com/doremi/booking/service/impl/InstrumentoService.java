@@ -19,14 +19,11 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -216,11 +213,13 @@ public class InstrumentoService implements IInstrumentoService {
         instrumentoSalidaDto.setCategoria(new CategoriaSalidaDto(instrumento.getCategoria().getCategoria_id(),instrumento.getCategoria().getNombre(), instrumento.getCategoria().getDescripcion(), instrumento.getCategoria().getImagen()));
         instrumentoSalidaDto.setDescripcion(instrumento.getDescripcion());
         instrumentoSalidaDto.setPrecioDia(instrumento.getPrecioDia());
+
         List<ImagenSalidaDto> imagenSalidaDto = modelMapper.map(instrumento.getImagenes(), new TypeToken<List<ImagenSalidaDto>>() {}.getType());
         instrumentoSalidaDto.setImagen(imagenSalidaDto);
 
         return instrumentoSalidaDto;
     }
+
 
     public Instrumento mapDtoModificadoToEntity(InstrumentoModificacionEntradaDto instrumentoModificado){
         return modelMapper.map(instrumentoModificado, Instrumento.class);
@@ -229,6 +228,8 @@ public class InstrumentoService implements IInstrumentoService {
     public InstrumentoSalidaDto mapEntitytoDtoSalida(Instrumento instrumento){
         return modelMapper.map(instrumento, InstrumentoSalidaDto.class);
     }
+
+
 
 
 }

@@ -18,10 +18,9 @@ public class Reserva {
     @Column(name = "reserva_id")
     private Long idReserva;
 
-
-    /* @ManyToOne (fetch = FetchType.LAZY)    (PENDIENTE INCLUIR CUANDO ESTÉ LISTA LA ENTIDAD USUARIO
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id")
-   private Usuario usuario */
+    private User usuario;
 
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "instrumento_id")
@@ -31,7 +30,10 @@ public class Reserva {
 
     private LocalDate fechaFinal;
 
-    public Reserva(Instrumento instrumento, LocalDate fechaInicial, LocalDate fechaFinal) {
+    //pendiente incluir campos no obligatorios
+
+    public Reserva(User usuario, Instrumento instrumento, LocalDate fechaInicial, LocalDate fechaFinal) {
+        this.usuario = usuario;
         this.instrumento = instrumento;
         this.fechaInicial = fechaInicial;
         this.fechaFinal = fechaFinal;

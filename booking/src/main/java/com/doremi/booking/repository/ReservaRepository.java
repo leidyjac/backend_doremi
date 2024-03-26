@@ -2,5 +2,11 @@ package com.doremi.booking.repository;
 import com.doremi.booking.entity.Reserva;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDate;
+import java.util.List;
+
 public interface ReservaRepository extends JpaRepository<Reserva, Long> {
+
+    /*List<Reserva> findByInstrumento_IdAndFechaInicialBetweenAndFechaFinalBetween(Long instrumentoId, LocalDate fechaInicial, LocalDate fechaFinal);*/
+
 }

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 public class UsuarioReservaSalidaDto {
 
-    private Long idUsuario;
+    private Long usuario_id;
 
     private String nombre;
 
@@ -19,6 +19,6 @@ public class UsuarioReservaSalidaDto {
 
     @Override
     public String toString() {
-        return "Id: " + idUsuario + ", nombre: " + nombre + ", apellido: " + apellido;
+        return "Id: " + usuario_id + ", nombre: " + nombre + ", apellido: " + apellido;
     }
 }
