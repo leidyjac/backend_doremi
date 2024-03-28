@@ -11,6 +11,8 @@ public class ReservaSalidaDto {
 
     private Long idReserva;
 
+    private LocalDate fechaReserva;
+
     private UsuarioReservaSalidaDto usuarioReservaSalidaDto;
 
     private InstrumentoReservaSalidaDto instrumentoReservaSalidaDto;

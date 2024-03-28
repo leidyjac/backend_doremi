@@ -9,6 +9,7 @@ import com.doremi.booking.repository.CategoriaRepository;
 import com.doremi.booking.service.ICategoriaService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.PersistenceException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -61,10 +62,14 @@ public class CategoriaService implements ICategoriaService {
     public String eliminarCategoria(Long id) throws ResourceNotFoundException {
         Categoria categoriaABuscar = categoriaRepository.findById(id).orElse(null);
         if(categoriaABuscar != null){
-            // Eliminar los instrumentos asociados a la categoría
-            entityManager.createQuery("DELETE FROM Instrumento WHERE categoria = :categoria")
-                    .setParameter("categoria", categoriaABuscar)
-                    .executeUpdate();
+            try {
+                entityManager.createQuery("DELETE FROM Instrumento WHERE categoria = :categoria")
+                        .setParameter("categoria", categoriaABuscar)
+                        .executeUpdate();
+            }catch(PersistenceException e) {
+                LOGGER.error("No se puede eliminar la categoría con ID: {}. Hay instrumentos asociados que tienen reservas.", id);
+                throw new IllegalStateException("No se puede eliminar la categoría. Hay instrumentos asociados que tienen reservas.");
+            }
             categoriaRepository.deleteById(id);
             LOGGER.warn("Se eliminó la categoría con ID: {} ", id);
             return "Categoría eliminada exitosamente";

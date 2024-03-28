@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -96,9 +97,14 @@ public class InstrumentoController {
     })
     @DeleteMapping("eliminar/{id}")
     public ResponseEntity<?> eliminarInstrumento (@PathVariable Long id) throws ResourceNotFoundException {
-        instrumentoService.eliminarInstrumento(id);
-        InstrumentoMessageSalidaDto instrumentoMessageSalidaDto = new InstrumentoMessageSalidaDto("El Instrumento ha sido eliminado Satisfactoriamente");
-        return new ResponseEntity<>(instrumentoMessageSalidaDto, HttpStatus.OK); //REVISAR
+        try {
+            instrumentoService.eliminarInstrumento(id);
+            InstrumentoMessageSalidaDto instrumentoMessageSalidaDto = new InstrumentoMessageSalidaDto("El Instrumento ha sido eliminado Satisfactoriamente");
+            return new ResponseEntity<>(instrumentoMessageSalidaDto, HttpStatus.OK);
+        } catch (DataIntegrityViolationException e) {
+            String mensajeError = "No se puede eliminar el instrumento porque tiene reservas asociadas.";
+            return new ResponseEntity<>(mensajeError, HttpStatus.CONFLICT);
+        }
     }
 
     @Operation(summary = "Buscar instrumento por keyWord")

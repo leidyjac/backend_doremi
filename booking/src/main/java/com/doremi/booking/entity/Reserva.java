@@ -1,12 +1,13 @@
 package com.doremi.booking.entity;
 
+import com.doremi.booking.listeners.ReservaListener;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
+@EntityListeners(ReservaListener.class)
 @NoArgsConstructor
 @Data
 @Entity
@@ -18,7 +19,9 @@ public class Reserva {
     @Column(name = "reserva_id")
     private Long idReserva;
 
-    @ManyToOne (fetch = FetchType.LAZY)
+    private LocalDate fechaReserva;
+
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name = "usuario_id")
     private User usuario;
 
@@ -30,9 +33,9 @@ public class Reserva {
 
     private LocalDate fechaFinal;
 
-    //pendiente incluir campos no obligatorios
 
-    public Reserva(User usuario, Instrumento instrumento, LocalDate fechaInicial, LocalDate fechaFinal) {
+    public Reserva(LocalDate fechaReserva, User usuario, Instrumento instrumento, LocalDate fechaInicial, LocalDate fechaFinal) {
+        this.fechaReserva = fechaReserva;
         this.usuario = usuario;
         this.instrumento = instrumento;
         this.fechaInicial = fechaInicial;

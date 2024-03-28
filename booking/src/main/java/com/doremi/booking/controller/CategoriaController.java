@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -71,8 +72,12 @@ public class CategoriaController {
     })
     @DeleteMapping("eliminar/{id}")
     public ResponseEntity<?> eliminarCategoria(@PathVariable Long id) throws ResourceNotFoundException {
-        categoriaService.eliminarCategoria(id);
-        return new ResponseEntity<>("Categoria eliminada exitosamente", HttpStatus.OK);
+        try {
+            categoriaService.eliminarCategoria(id);
+            return new ResponseEntity<>("Categoria eliminada exitosamente", HttpStatus.OK);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se pudo eliminar la categoría con ID: " + id + ". Hay instrumentos asociados que tienen reservas.");
+        }
     }
 }
 

@@ -19,6 +19,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -89,12 +90,16 @@ public class InstrumentoService implements IInstrumentoService {
     }
 
     @Override
-    public void eliminarInstrumento(Long id) throws ResourceNotFoundException {
+    public void eliminarInstrumento(Long id) throws ResourceNotFoundException{
         Instrumento instrumentoABuscar = instrumentoRepository.findById(id).orElse(null);
 
         if (instrumentoABuscar != null) {
-            instrumentoRepository.deleteById(id);
-            LOGGER.warn("Se eliminó el instrumento con id: {}", id);
+            try {
+                instrumentoRepository.deleteById(id);
+                LOGGER.warn("Se eliminó el instrumento con id: {}", id);
+            }catch (DataIntegrityViolationException e) {
+                    throw new DataIntegrityViolationException("No se puede eliminar el instrumento porque tiene reservas asociadas.");
+            }
         } else {
             LOGGER.error("Instrumento no encontrado con id: {}", id);
             throw new ResourceNotFoundException("El instrumento no se encuentra con el id " + id);

@@ -13,5 +13,5 @@ public interface IReservaService {
 
     ReservaSalidaDto reservarInstrumento (ReservaEntradaDto reserva) throws BadRequestException, ResourceNotFoundException;
 
-   //Boolean fechasDisponibles(Long instrumentoId, LocalDate fechaInicial, LocalDate fechaFinal);
+    List<ReservaSalidaDto> listarReservas () throws ResourceNotFoundException ;
 }

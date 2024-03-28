@@ -22,6 +22,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservaService implements IReservaService {
@@ -55,6 +57,15 @@ public class ReservaService implements IReservaService {
         ReservaSalidaDto reservaSalidaDto = null;
         UsuarioSalidaDTO usuario = usuarioService.buscarUsuarioPorId(reservaEntradaDto.getUsuarioId());InstrumentoSalidaDto instrumento = instrumentoService.buscarInstrumentoPorId(reservaEntradaDto.getInstrumentoId());
 
+        List<Reserva> reservasParaInstrumento = reservaRepository.findReservasByInstrumento(maptoDtoSalidaAInstrumento(instrumento));
+
+        List<Reserva> reservasOcupadas = reservasParaInstrumento.stream()
+                .filter(reserva -> {
+                    return !(reservaEntradaDto.getFechaFinal().isBefore(reserva.getFechaInicial()) ||
+                            reservaEntradaDto.getFechaInicial().isAfter(reserva.getFechaFinal()));
+                })
+                .collect(Collectors.toList());
+
         if(instrumento == null || usuario == null){
             if(instrumento == null && usuario == null){
                 LOGGER.error("El usuario y el instrumento ingresados no se encuentran en la base de datos");
@@ -66,10 +77,10 @@ public class ReservaService implements IReservaService {
                 LOGGER.error ("El usuario ingresado no se encuentra en la base de datos");
             }
         }
-       /*if(!fechasDisponibles(reservaEntradaDto.getInstrumentoId(), reservaEntradaDto.getFechaInicial(), reservaEntradaDto.getFechaFinal())){
-            LOGGER.error("Las fechas deseadas no están disponibles. Por favor ingresa otro rango de fechas");
+       if(!reservasOcupadas.isEmpty()){
+            LOGGER.info("Las fechas deseadas no están disponibles. Por favor ingresa otro rango de fechas");
             throw new BadRequestException("Las fechas deseadas no están disponibles. Por favor ingresa otro rango de fechas");
-        }*/
+        }
         else{
             Reserva reservaNueva = reservaRepository.save(mapDtoEntradaAEntidad(reservaEntradaDto));
             reservaSalidaDto = entidadADtoSalida(reservaNueva);
@@ -78,15 +89,31 @@ public class ReservaService implements IReservaService {
         return reservaSalidaDto;
     }
 
+    @Override
+    public List<ReservaSalidaDto> listarReservas() {
+        List<Reserva> listaReservas = reservaRepository.findAll();
+        LOGGER.info("Listado de reservas: {} ", listaReservas);
+
+        return listaReservas.stream()
+                .map(reserva -> {
+                    try {
+                        return entidadADtoSalida(reserva);
+                    } catch (ResourceNotFoundException e) {
+                        LOGGER.error("Error al convertir reserva a DTO: {}", e.getMessage());
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
     public Reserva mapDtoEntradaAEntidad(ReservaEntradaDto reservaEntradaDto) throws ResourceNotFoundException {
         Reserva reserva = new Reserva();
-        reserva.setIdReserva(null); // Excluir idReserva
+        reserva.setIdReserva(null);
 
-        // Obtener la entidad User a partir del ID
         UsuarioSalidaDTO usuarioSalidaDto = usuarioService.buscarUsuarioPorId(reservaEntradaDto.getUsuarioId());
         reserva.setUsuario(maptoDtoSalidaAUsuario(usuarioSalidaDto));
 
-        // Obtener la entidad Instrumento a partir del ID
         InstrumentoSalidaDto instrumentosalidaDto = instrumentoService.buscarInstrumentoPorId(reservaEntradaDto.getInstrumentoId());
         reserva.setInstrumento(maptoDtoSalidaAInstrumento(instrumentosalidaDto));
 

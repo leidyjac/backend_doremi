@@ -29,13 +29,14 @@ public class SecurityConfig {
                 csrf
                 .disable())
             .authorizeHttpRequests((authz) -> authz
-                .requestMatchers("/auth/**","/usuario/**", 
+                .requestMatchers("/auth/**",
                 "/categoria/listar" , "/instrumentos/listaraleatorios", 
                 "/instrumentos/buscarPorKeyWord/**","/instrumentos/buscarPorNombre/**",
                  "/instrumentos/buscarPorId/**").permitAll()
                 .requestMatchers("/accion/**","/categoria/agregar","/categoria/eliminar/**",
                  "/instrumentos/agregar", "/instrumentos/eliminar/**", "/instrumentos/modificar",
-                 "/instrumentos/listar","usuario/**").hasAuthority("ADMIN")
+                 "/instrumentos/listar","usuario/**", "reservas/listar").hasAuthority("ADMIN")
+                            .requestMatchers("/reservas/agregar").hasAuthority("USER")
                 .anyRequest().authenticated()
                 )
             .sessionManagement(sessionManager->

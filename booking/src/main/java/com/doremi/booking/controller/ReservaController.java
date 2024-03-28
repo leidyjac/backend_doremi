@@ -17,10 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -48,5 +47,20 @@ public class ReservaController {
     @PostMapping("agregar")
     public ResponseEntity<ReservaSalidaDto> agregarInstrumento(@Valid @RequestBody ReservaEntradaDto reserva) throws BadRequestException, ResourceNotFoundException {
         return new ResponseEntity<>(reservaService.reservarInstrumento(reserva), HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Listado de reservas")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Listado de reservas obtenido correctamente",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ReservaSalidaDto.class))}),
+            @ApiResponse(responseCode = "400", description = "Bad Request",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Server error",
+                    content = @Content)
+    })
+    @GetMapping("listar")
+    public ResponseEntity<List<ReservaSalidaDto>> listarReservas() throws ResourceNotFoundException {
+        return new ResponseEntity<>(reservaService.listarReservas(), HttpStatus.OK);
     }
 }
